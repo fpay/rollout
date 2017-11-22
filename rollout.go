@@ -119,6 +119,7 @@ type Rollout struct {
 	template      *template.Template
 	timeFormat    string
 	keeps         int
+	zoneOffset    int
 
 	mux    sync.RWMutex
 	buf    *rolloutBuffer
@@ -172,6 +173,8 @@ func New(options Options) *Rollout {
 		clock:         options.Clock,
 		keeps:         options.Keeps,
 	}
+
+	_, r.zoneOffset = options.Clock().Zone()
 
 	return &r
 }
@@ -251,7 +254,11 @@ func (r *Rollout) Close() error {
 // }
 
 func (r *Rollout) position(t time.Time) int {
-	return int(t.Unix()) / r.interval
+	timestamp := int(t.Unix())
+	if r.interval >= RotateDaily {
+		timestamp += r.zoneOffset
+	}
+	return timestamp / r.interval
 }
 
 func (r *Rollout) destination(t time.Time) string {

@@ -127,6 +127,8 @@ func TestRolloutPosition(t *testing.T) {
 		{time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC), RotateMinutely, 0},
 		{time.Date(2017, time.November, 11, 14, 9, 27, 0, time.UTC), RotateMinutely, 25173489},
 		{time.Date(2017, time.November, 11, 14, 9, 27, 0, time.UTC), RotateDaily, 17481},
+		{time.Date(2017, time.November, 22, 0, 0, 0, 0, time.UTC), RotateDaily, 17492},
+		{time.Date(2017, time.November, 22, 0, 0, 0, 0, time.Local), RotateDaily, 17492},
 	}
 
 	for _, c := range cases {
@@ -151,6 +153,7 @@ func TestRolloutDestination(t *testing.T) {
 		{"/var/log", "{{.Time}}.log", "2006-01-02", time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC), "/var/log/1970-01-01.log"},
 		{"/var/log", "test-{{.Time}}.log", "2006-01-02", time.Date(2017, time.November, 11, 14, 15, 0, 0, time.UTC), "/var/log/test-2017-11-11.log"},
 		{"", "test-{{.Time}}.log", "2006-01-02 15:04", time.Date(2017, time.November, 11, 14, 15, 0, 0, time.UTC), "test-2017-11-11 14:15.log"},
+		{"", "test-{{.Time}}.log", "2006-01-02", time.Date(2017, time.November, 22, 0, 0, 0, 0, time.Local), "test-2017-11-22.log"},
 	}
 
 	for _, c := range cases {
